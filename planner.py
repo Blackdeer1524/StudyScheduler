@@ -3,30 +3,26 @@ from fractions import Fraction
 from dataclasses import dataclass
 
 
-DEADLINE = datetime.datetime(datetime.datetime.today().year, 8, 31)
-
-
-buffer = [("Algebra", 35, 7)]
-days_total = (DEADLINE - datetime.datetime.today()).days
-subjects_count = len(buffer)
-
-
 @dataclass(frozen=True)
 class SubjectInfo:
     already_done: int
     total_count: int
 
 
-subjects_info: dict[str, SubjectInfo] = {}
-total_lectures_count = 0
+subjects_info: dict[str, SubjectInfo] = {
+    "Algebra": SubjectInfo(
+        already_done=7,
+        total_count=35
+    )
+}
 
-for i in range(subjects_count):
-    name, total_count, already_done = buffer[i]  # input().split()
-    subjects_info[name] = SubjectInfo(already_done, total_count)
-    total_lectures_count += total_count - already_done
+DEADLINE = datetime.datetime(datetime.datetime.today().year, 8, 31)
+DAYS_TOTAL = (DEADLINE - datetime.datetime.today()).days
 
+subjects_count = len(subjects_info)
+total_lectures_count = sum(info.total_count - info.already_done for info in subjects_info.values())
 
-dayly_load = Fraction(total_lectures_count, days_total)
+dayly_load = Fraction(total_lectures_count, DAYS_TOTAL)
 current_dose = Fraction(0, 1)
 
 # сколько уже сделано
@@ -38,7 +34,7 @@ subjects_goals = {
 # считаем с конца. иначе план может на сегодня ничего не выдать
 today = DEADLINE
 next_lecture_to_schedule = {s: info.total_count for s, info in subjects_info.items()}
-for i in range(days_total):
+for i in range(DAYS_TOTAL):
     cur_date = today - datetime.timedelta(days=i)
     current_dose += dayly_load
     actual_count = int(current_dose)

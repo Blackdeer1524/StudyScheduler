@@ -11,13 +11,14 @@ class SubjectInfo:
 
 subjects_info: dict[str, SubjectInfo] = {
     "Algebra": SubjectInfo(
-        already_done=7,
+        already_done=9,
         total_count=35
     )
 }
 
-DEADLINE = datetime.datetime(datetime.datetime.today().year, 8, 31)
-DAYS_TOTAL = (DEADLINE - datetime.datetime.today()).days
+TODAY = datetime.datetime.today()
+DEADLINE = datetime.datetime(TODAY.year, 8, 31)
+DAYS_TOTAL = (DEADLINE - TODAY).days
 
 subjects_count = len(subjects_info)
 total_lectures_count = sum(info.total_count - info.already_done for info in subjects_info.values())

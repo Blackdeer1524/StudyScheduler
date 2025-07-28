@@ -18,7 +18,7 @@ subjects_info: dict[str, SubjectInfo] = {
 
 TODAY = datetime.datetime.today()
 DEADLINE = datetime.datetime(TODAY.year, 8, 31)
-DAYS_TOTAL = (DEADLINE - TODAY).days
+DAYS_TOTAL = (DEADLINE - TODAY).days + 1
 
 subjects_count = len(subjects_info)
 total_lectures_count = sum(info.total_count - info.already_done for info in subjects_info.values())

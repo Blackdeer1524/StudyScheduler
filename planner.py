@@ -11,8 +11,12 @@ class SubjectInfo:
 
 subjects_info: dict[str, SubjectInfo] = {
     "Algebra": SubjectInfo(
-        already_done=9,
-        total_count=35
+        already_done=14,
+        total_count=33
+    ),
+    "Probability": SubjectInfo(
+        already_done=0,
+        total_count=27,
     )
 }
 
@@ -40,7 +44,6 @@ for i in range(DAYS_TOTAL):
     current_dose += dayly_load
     actual_count = int(current_dose)
     current_dose -= actual_count
-    print(f"[{cur_date.date()}]:", end="")
     if actual_count == 0:
         print("FREE DAY")
         continue
@@ -53,9 +56,8 @@ for i in range(DAYS_TOTAL):
                 least_done_percent = percentage_done
                 least_done_subject = subject
         assert least_done_subject is not None
-        print(f"{least_done_subject} {next_lecture_to_schedule[least_done_subject]}", end="")
+        print(f"[{cur_date.date()}]:{least_done_subject} {next_lecture_to_schedule[least_done_subject]}")
         subjects_goals[least_done_subject] -= Fraction(
             1, subjects_info[least_done_subject].total_count
         )
         next_lecture_to_schedule[least_done_subject] -= 1
-    print()

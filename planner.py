@@ -1,7 +1,6 @@
 import datetime
 from fractions import Fraction
 from dataclasses import dataclass
-import math
 
 
 @dataclass(frozen=True)
@@ -12,7 +11,7 @@ class SubjectInfo:
 
 TODAY = datetime.datetime.today()
 DEADLINE = datetime.datetime(TODAY.year, 8, 31)
-DAYS_LEFT = (DEADLINE - TODAY).days + 1
+DAYS_LEFT = (DEADLINE - TODAY).days + 2
 
 subjects_info: dict[str, SubjectInfo] = {
     "Algebra": SubjectInfo(already_done=21, total_count=35),
@@ -34,11 +33,10 @@ done_percentages = {
     for name, info in subjects_info.items()
 }
 
-# считаем с конца. иначе план может на сегодня ничего не выдать
-today = TODAY
-next_lecture_to_schedule = {s: info.already_done + 1 for s, info in subjects_info.items()}
+today = DEADLINE
+next_lecture_to_schedule = {s: info.total_count for s, info in subjects_info.items()}
 for i in range(DAYS_LEFT):
-    cur_date = today + datetime.timedelta(days=i)
+    cur_date = today - datetime.timedelta(days=i)
     current_dose += dayly_load
     actual_count = int(current_dose)
     current_dose -= actual_count
@@ -62,4 +60,4 @@ for i in range(DAYS_LEFT):
             subjects_info[least_done_subject].total_count
             - subjects_info[least_done_subject].already_done,
         )
-        next_lecture_to_schedule[least_done_subject] += 1
+        next_lecture_to_schedule[least_done_subject] -= 1

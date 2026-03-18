@@ -63,7 +63,7 @@ subjects_info: dict[str, dict[int, LectureInfo]] = {
         28: LectureInfo(hours=1, minutes=25),
     },
     "Линейная алгебра": {
-        1:  LectureInfo(hours=3, minutes=7),
+        # 1:  LectureInfo(hours=3, minutes=7),
         2:  LectureInfo(hours=1, minutes=55),
         3:  LectureInfo(hours=1, minutes=36),
         4:  LectureInfo(hours=1, minutes=32),

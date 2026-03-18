@@ -117,37 +117,47 @@ remaining: dict[str, deque[int]] = {
 
 budget = Fraction(0)
 
-for i in range(DAYS_LEFT):
+for i in range(DAYS_LEFT - 1, -1, -1):
     cur_date = DEADLINE - datetime.timedelta(days=i)
     budget += daily_target
 
     assigned_today = False
 
     while True:
-        # Find the subject with the smallest done-fraction that still has lectures left
-        least_done_frac = Fraction(2)
-        least_done_subject: str | None = None
-        for subject, done_frac in time_done.items():
-            if remaining[subject] and done_frac < least_done_frac:
-                least_done_frac = done_frac
-                least_done_subject = subject
-
-        if least_done_subject is None:
+        candidates = [
+            (s, remaining[s][0])
+            for s in subjects_info
+            if remaining[s]
+        ]
+        if not candidates:
             break  # all lectures scheduled
 
-        next_lec_num = remaining[least_done_subject][0]
-        next_lec = subjects_info[least_done_subject][next_lec_num]
-        next_dur = next_lec.total_minutes
+        # Tier 1: lectures that fit within the remaining budget
+        fitting = [
+            (s, lec_num)
+            for s, lec_num in candidates
+            if subjects_info[s][lec_num].total_minutes <= budget
+        ]
 
-        if budget >= next_dur or not assigned_today:
-            remaining[least_done_subject].popleft()
-            budget -= next_dur
-            time_done[least_done_subject] += Fraction(next_dur, total_time[least_done_subject])
-            h, m = divmod(next_dur, 60)
-            print(f"[{cur_date.date()}]:{least_done_subject} {next_lec_num} ({h}h {m}m)")
-            assigned_today = True
+        if fitting:
+            # least-done fraction, tie-broken by largest (tightest-fit) duration
+            s, lec_num = min(
+                fitting,
+                key=lambda x: (time_done[x[0]], -subjects_info[x[0]][x[1]].total_minutes),
+            )
+        elif not assigned_today:
+            # Tier 2: force-assign from least-done subject
+            s, lec_num = min(candidates, key=lambda x: time_done[x[0]])
         else:
             break
+
+        dur = subjects_info[s][lec_num].total_minutes
+        remaining[s].popleft()
+        budget -= dur
+        time_done[s] += Fraction(dur, total_time[s])
+        h, m = divmod(dur, 60)
+        print(f"[{cur_date.date()}]:{s} {lec_num} ({h}h {m}m)")
+        assigned_today = True
 
     if not assigned_today:
         print("FREE DAY")

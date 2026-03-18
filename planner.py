@@ -15,19 +15,20 @@ class LectureInfo:
         return self.hours * 60 + self.minutes
 
 
-TODAY = datetime.datetime.today()
-DEADLINE = datetime.datetime(TODAY.year, 4, 15)
-DAYS_LEFT = (DEADLINE - TODAY).days + 2
-
 with open("subjects.yaml", encoding="utf-8") as _f:
     _raw = yaml.safe_load(_f)
+
+_cfg = _raw["config"]
+START_DATE = datetime.datetime.combine(_cfg["start_date"], datetime.time())
+DEADLINE = datetime.datetime.combine(_cfg["deadline"], datetime.time())
+DAYS_LEFT = (DEADLINE - START_DATE).days
 
 subjects_info: dict[str, dict[int, LectureInfo]] = {
     subject: {
         int(lec_num): LectureInfo(**info)
         for lec_num, info in lectures.items()
     }
-    for subject, lectures in _raw.items()
+    for subject, lectures in _raw["subjects"].items()
 }
 
 total_minutes = sum(
@@ -53,7 +54,7 @@ remaining: dict[str, deque[int]] = {
 
 budget = Fraction(0)
 
-for i in range(DAYS_LEFT - 1, -1, -1):
+for i in range(DAYS_LEFT, 0, -1):
     cur_date = DEADLINE - datetime.timedelta(days=i)
     budget += daily_target
 

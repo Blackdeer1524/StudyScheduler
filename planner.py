@@ -2,6 +2,7 @@ import datetime
 from collections import deque
 from fractions import Fraction
 from dataclasses import dataclass
+import yaml
 
 
 @dataclass(frozen=True)
@@ -18,80 +19,15 @@ TODAY = datetime.datetime.today()
 DEADLINE = datetime.datetime(TODAY.year, 4, 15)
 DAYS_LEFT = (DEADLINE - TODAY).days + 2
 
+with open("subjects.yaml", encoding="utf-8") as _f:
+    _raw = yaml.safe_load(_f)
+
 subjects_info: dict[str, dict[int, LectureInfo]] = {
-    "Теория вероятностей": {
-        10: LectureInfo(hours=1, minutes=25),
-        14: LectureInfo(hours=2, minutes=31),
-        15: LectureInfo(hours=1, minutes=56),
-        16: LectureInfo(hours=1, minutes=38),
-        17: LectureInfo(hours=2, minutes=8),
-        18: LectureInfo(hours=1, minutes=28),
-        19: LectureInfo(hours=1, minutes=14),
-        20: LectureInfo(hours=1, minutes=7),
-        21: LectureInfo(hours=1, minutes=29),
-        22: LectureInfo(hours=1, minutes=14),
-        23: LectureInfo(hours=1, minutes=18),
-        24: LectureInfo(hours=1, minutes=28),
-        25: LectureInfo(hours=1, minutes=0),
-        26: LectureInfo(hours=1, minutes=39),
-        27: LectureInfo(hours=1, minutes=39),
-        28: LectureInfo(hours=1, minutes=35),
-        29: LectureInfo(hours=1, minutes=27),
-    },
-    "Анализ": {
-        7:  LectureInfo(hours=3, minutes=24),
-        8:  LectureInfo(hours=2, minutes=23),
-        9:  LectureInfo(hours=1, minutes=35),
-        10: LectureInfo(hours=3, minutes=45),
-        11: LectureInfo(hours=1, minutes=29),
-        12: LectureInfo(hours=1, minutes=20),
-        13: LectureInfo(hours=1, minutes=37),
-        14: LectureInfo(hours=1, minutes=38),
-        15: LectureInfo(hours=1, minutes=26),
-        16: LectureInfo(hours=1, minutes=8),
-        17: LectureInfo(hours=1, minutes=40),
-        18: LectureInfo(hours=1, minutes=20),
-        19: LectureInfo(hours=1, minutes=30),
-        20: LectureInfo(hours=1, minutes=23),
-        21: LectureInfo(hours=0, minutes=56),
-        22: LectureInfo(hours=1, minutes=30),
-        23: LectureInfo(hours=1, minutes=3),
-        24: LectureInfo(hours=1, minutes=15),
-        25: LectureInfo(hours=1, minutes=23),
-        26: LectureInfo(hours=1, minutes=14),
-        27: LectureInfo(hours=1, minutes=42),
-        28: LectureInfo(hours=1, minutes=25),
-    },
-    "Линейная алгебра": {
-        # 1:  LectureInfo(hours=3, minutes=7),
-        2:  LectureInfo(hours=1, minutes=55),
-        3:  LectureInfo(hours=1, minutes=36),
-        4:  LectureInfo(hours=1, minutes=32),
-        5:  LectureInfo(hours=1, minutes=25),
-        6:  LectureInfo(hours=1, minutes=36),
-        7:  LectureInfo(hours=1, minutes=54),
-        8:  LectureInfo(hours=0, minutes=51),
-        9:  LectureInfo(hours=1, minutes=30),
-        10: LectureInfo(hours=1, minutes=11),
-        11: LectureInfo(hours=1, minutes=19),
-        12: LectureInfo(hours=1, minutes=36),
-        13: LectureInfo(hours=2, minutes=5),
-        14: LectureInfo(hours=1, minutes=45),
-        15: LectureInfo(hours=1, minutes=24),
-        16: LectureInfo(hours=1, minutes=14),
-        17: LectureInfo(hours=1, minutes=43),
-        18: LectureInfo(hours=1, minutes=58),
-        19: LectureInfo(hours=1, minutes=27),
-        20: LectureInfo(hours=1, minutes=39),
-        21: LectureInfo(hours=0, minutes=59),
-        22: LectureInfo(hours=1, minutes=29),
-        23: LectureInfo(hours=1, minutes=1),
-        24: LectureInfo(hours=1, minutes=10),
-        25: LectureInfo(hours=1, minutes=22),
-        26: LectureInfo(hours=1, minutes=35),
-        27: LectureInfo(hours=1, minutes=20),
-        28: LectureInfo(hours=1, minutes=47),
-    },
+    subject: {
+        int(lec_num): LectureInfo(**info)
+        for lec_num, info in lectures.items()
+    }
+    for subject, lectures in _raw.items()
 }
 
 total_minutes = sum(

@@ -1,10 +1,9 @@
 config:
-  start_date: 2026-03-18
+  start_date: 2026-03-20
   deadline: 2026-04-15
 
 subjects:
   "Теория вероятностей":
-    10: {hours: 1, minutes: 25}
     14: {hours: 2, minutes: 31}
     15: {hours: 1, minutes: 56}
     16: {hours: 1, minutes: 38}
@@ -23,7 +22,7 @@ subjects:
     29: {hours: 1, minutes: 27}
 
   "Анализ":
-    7:  {hours: 3, minutes: 24}
+    # 7:  {hours: 3, minutes: 24}
     8:  {hours: 2, minutes: 23}
     9:  {hours: 1, minutes: 35}
     10: {hours: 3, minutes: 45}

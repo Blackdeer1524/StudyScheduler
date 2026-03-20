@@ -1,4 +1,4 @@
-calendar.txt: planner.py
+calendar.txt: planner.py subjects.yaml
 	python planner.py | grep -v FREE > calendar.txt
 
 generate: generate.py calendar.txt
